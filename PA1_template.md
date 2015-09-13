@@ -107,7 +107,8 @@ The next question to answer is within each recorded interval across all days in 
 x  <- complete_days_only %>% group_by(interval) %>% summarise(avg_interval = mean(steps))
 ```
 
-Plot the results to see the distribution of the averages
+Plot the results to see the distribution of the averages. The range of intervals will be plotted along the x-axis and the average number of steps for each interval will be plotted along the y-axis.  A time series plot will be used since the data is collected over the course of each day in the month for a 2-month period.
+
 
 ```r
 plot(x$interval, 
@@ -118,18 +119,110 @@ plot(x$interval,
      main = "Average Steps within Intervals",
      col.main = "blue",
      font.main = 4,
-     xlab = "Daily intervals",
+     xlab = "Daily Intervals",
      ylab = "Step Averages"
      )
 ```
 
 ![](PA1_template_files/figure-html/plot_avg_steps_within_interval-1.png) 
 
-x[which.max(x$avg_interval), ]
+So *which* interval had the highest number of average steps?  The `which.max` function answers that easily.
 
+```r
+x[which.max(x$avg_interval), ]
+```
+
+The highest average number of steps was found in interval **835** and had the value **206.1698113**.
 
 ## Imputing missing values
 
+The original dataset contained a certain amount of `NA` values, which were removed prior to doing the previous analyses.  Just how many values in the original dataset were `NA` is easily calculated using the `nrow` function against both the original and reduced datasets.
 
 
+```r
+nrow(activity)
+```
+
+```
+## [1] 17568
+```
+
+```r
+nrow(complete_days_only)
+```
+
+```
+## [1] 15264
+```
+
+And so the number of missing observations is **2304**.
+
+The presence of missing data for certain days in this time sequence may introduce bias into some calculations or summaries of the data, so it is useful to impute values for those observations in this category.  There are packages in `R` which handle imputations but using a simple random number generator in this case should suffice.
+
+The following code will generate a series of integral values that spans the range of observations in the original dataset, from the minimum to the maximum value.  The entries in this vector will be used as replacement values for the existing `NA` entries in the original dataset.  Using `set.seed` will result in the same set of integers being produced for subsequent runs.
+
+
+```r
+set.seed(1234)
+z  <- floor(runif(nrow(activity), 
+                  min = min(activity$steps, na.rm = T), 
+                  max = max(activity$steps, na.rm = T)/2))
+```
+
+Next the indices of the missing values are determined.
+
+
+```r
+w  <- which(is.na(activity$steps))
+```
+
+Finally, the missing values for the number of steps are replaced with corresponding entries from the integer vector.
+
+
+```r
+activity$steps[w]  <- z[w]
+```
+
+How does imputing values for missing data affect the results obtained earlier with the reduced dataset?  The same calculations for total steps per day can be calculated against the augmented dataset and the results plotted via a histogram.
+
+
+```r
+complete_data  <- activity %>% 
+  group_by(date) %>% 
+  summarise(daily_step_count = sum(steps), mean_step = mean(steps), median_step = median(steps))
+```
+
+
+```r
+hist(complete_data$daily_step_count, 
+    breaks = 10,
+    main = "Histogram of total steps per day",
+    xlab = "Range of step totals",
+    ylab = "Number of totals in range",
+    border = "green",
+    col = heat.colors(5),
+    las = 1,
+    ylim = c(0, 35))
+```
+
+![](PA1_template_files/figure-html/plot_count_with_complete_data-1.png) 
+
+
+```r
+summary(complete_data$mean_step)
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##   0.1424  34.0900  39.7800  58.8600  52.3800 213.6000
+```
+
+```r
+summary(complete_data$median_step)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    0.00    0.00   26.52    0.00  215.50
+```
 ## Are there differences in activity patterns between weekdays and weekends?
