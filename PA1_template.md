@@ -200,7 +200,7 @@ hist(complete_data$daily_step_count,
     xlab = "Range of step totals",
     ylab = "Number of totals in range",
     border = "green",
-    col = heat.colors(5),
+    col = heat.colors(12),
     las = 1,
     ylim = c(0, 25))
 ```
