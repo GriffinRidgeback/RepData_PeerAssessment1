@@ -134,7 +134,7 @@ The following code will generate a series of integral values that spans the rang
 set.seed(1234)
 z  <- floor(runif(nrow(activity), 
                   min = min(activity$steps, na.rm = T), 
-                  max = max(activity$steps, na.rm = T)/2))
+                  max = max(activity$steps, na.rm = T)/10))
 ```
 
 Next the indices of the missing values are determined.
@@ -166,7 +166,7 @@ hist(complete_data$daily_step_count,
     border = "green",
     col = heat.colors(5),
     las = 1,
-    ylim = c(0, 30))
+    ylim = c(0, 25))
 ```
 
 ```{r mean_and_median_complete}
