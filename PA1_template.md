@@ -226,3 +226,21 @@ summary(complete_data$median_step)
 ##   0.000   0.000   0.000   5.246   0.000  43.000
 ```
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```r
+activity$date <- as.POSIXct(activity$date)
+
+activity$dayType  <- ifelse(weekdays(activity$date) %in% c("Saturday", "Sunday"), "weekend", "weekday")
+activity$dayType  <- as.factor(activity$dayType)
+q  <- activity %>% group_by(dayType, interval) %>% summarise(daily_step_count = sum(steps))
+library(lattice)
+with(q, xyplot(daily_step_count ~ interval | dayType, 
+type = "l",      
+main = "Average Steps within Intervals",
+col.main = "blue",
+font.main = 4,
+xlab = "Daily Intervals",
+ylab = "Step Averages"))
+```
+
+![](PA1_template_files/figure-html/weekends_weekdays-1.png) 
