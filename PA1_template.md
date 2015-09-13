@@ -98,9 +98,34 @@ summary(step_summary$median_step)
 ##       0       0       0       0       0       0
 ```
 
-
 ## What is the average daily activity pattern?
 
+The next question to answer is within each recorded interval across all days in each of the two months, what was the average number of steps taken in each interval?  To answer this question, `group_by` each interval and then take the *mean* of the steps in each interval.
+
+
+```r
+x  <- complete_days_only %>% group_by(interval) %>% summarise(avg_interval = mean(steps))
+```
+
+Plot the results to see the distribution of the averages
+
+```r
+plot(x$interval, 
+     x$avg_interval, 
+     type = "l", 
+     las = 1, 
+     col = "wheat", 
+     main = "Average Steps within Intervals",
+     col.main = "blue",
+     font.main = 4,
+     xlab = "Daily intervals",
+     ylab = "Step Averages"
+     )
+```
+
+![](PA1_template_files/figure-html/plot_avg_steps_within_interval-1.png) 
+
+x[which.max(x$avg_interval), ]
 
 
 ## Imputing missing values
