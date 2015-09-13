@@ -166,7 +166,7 @@ The following code will generate a series of integral values that spans the rang
 set.seed(1234)
 z  <- floor(runif(nrow(activity), 
                   min = min(activity$steps, na.rm = T), 
-                  max = max(activity$steps, na.rm = T)/2))
+                  max = max(activity$steps, na.rm = T)/10))
 ```
 
 Next the indices of the missing values are determined.
@@ -202,7 +202,7 @@ hist(complete_data$daily_step_count,
     border = "green",
     col = heat.colors(5),
     las = 1,
-    ylim = c(0, 35))
+    ylim = c(0, 25))
 ```
 
 ![](PA1_template_files/figure-html/plot_count_with_complete_data-1.png) 
@@ -213,8 +213,8 @@ summary(complete_data$mean_step)
 ```
 
 ```
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-##   0.1424  34.0900  39.7800  58.8600  52.3800 213.6000
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.1424 34.0900 38.8800 37.7000 44.4800 73.5900
 ```
 
 ```r
@@ -223,6 +223,6 @@ summary(complete_data$median_step)
 
 ```
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00    0.00    0.00   26.52    0.00  215.50
+##   0.000   0.000   0.000   5.246   0.000  43.000
 ```
 ## Are there differences in activity patterns between weekdays and weekends?
