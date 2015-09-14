@@ -28,7 +28,7 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 
 ## Loading and preprocessing the data
 
-The first step in the project, after downloading the data and unpacking it to the local file system, is to read it into R.  Since the data has been provided as a CSV file, the logical method to use would be read.csv; stringsAsFactors is set to FALSE so that dates are not factors but actual date strings.
+The first step in the project, after downloading the data and unpacking it to the local file system, is to read it into R.  Since the data has been provided as a CSV file, the logical method to use would be `read.csv`; *stringsAsFactors* is set to **FALSE** so that dates are not factors but strings that will be converted to dates later.
 
 
 ```r
@@ -37,7 +37,7 @@ activity  <- read.csv("./data/activity.csv", stringsAsFactors = F)
 
 ## What is mean total number of steps taken per day?
 
-The first question to be asked of this dataset is how many total steps were taken in a 24-hour period?  The dplyr package will be useful for this and other questions, so loading that library will be the first step.
+The first question to be asked of this dataset is how many total steps were taken in a 24-hour period?  The `dplyr` package will be useful for this and other questions, so loading that library will be the first step.
 
 
 ```r
@@ -45,20 +45,20 @@ suppressMessages(library(dplyr))
 library("dplyr")
 ```
 
-Next, since the data contains NA values, create a second dataset with those values removed.  We want to consider only those days for which step counts were recorded.
+Next, since the data contains **NA** values, create a second dataset with those values removed.  To consider only those days for which step counts were recorded, use the `complete.cases` method.
 
 
 ```r
 complete_days_only <- activity[complete.cases(activity), ]
 ```
 
-To perform the analysis required for this part of the assignment, use the `group_by` and `summarise` functions from `dplyr`.  The *sum*, *mean*, and *median* can be calculated using `summarise` once the data has been organized by **date** using `group_by`.
+To perform the analysis required for this part of the assignment, use the `group_by` and `summarise` functions from `dplyr`.  The *sum* can be calculated using `summarise` once the data has been organized by **date** using `group_by`.
 
 
 ```r
-step_summary  <- complete_days_only %>% 
-  group_by(date) %>% 
-  summarise(daily_step_count = sum(steps), mean_step = mean(steps), median_step = median(steps))
+step_summary  <-  complete_days_only %>% 
+                  group_by(date) %>% 
+                  summarise(daily_step_count = sum(steps))
 ```
 
 Now plot the results for total number of steps taken per day.  The histogram will show the range of totals across the x-axis (from 0 to the maximum number of steps recorded for a single day) while along the y-axis will be shown the number of days that fell within each range (i.e., between 0 and 5000, there were 5 days which had totals in that range).
@@ -77,26 +77,7 @@ hist(step_summary$daily_step_count,
 
 ![](./figures/plot_count-1.png) 
 
-Since the mean and median were calculated at the same time as the sum, they simply can be printed at this point.
-
-
-```r
-summary(step_summary$mean_step)
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##  0.1424 30.7000 37.3800 37.3800 46.1600 73.5900
-```
-
-```r
-summary(step_summary$median_step)
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##       0       0       0       0       0       0
-```
+The mean and median can be easily calculated from the daily totals, and the mean of all the steps over the two-month period is **10766.19** while the median is **10765**.
 
 ## What is the average daily activity pattern?
 
@@ -104,7 +85,9 @@ The next question to answer is within each recorded interval across all days in 
 
 
 ```r
-x  <- complete_days_only %>% group_by(interval) %>% summarise(avg_interval = mean(steps))
+x  <- complete_days_only %>% 
+      group_by(interval) %>% 
+      summarise(avg_interval = mean(steps))
 ```
 
 Plot the results to see the distribution of the averages. The range of intervals will be plotted along the x-axis and the average number of steps for each interval will be plotted along the y-axis.  A time series plot will be used since the data is collected over the course of each day in the month for a 2-month period.
@@ -115,7 +98,7 @@ plot(x$interval,
      x$avg_interval, 
      type = "l", 
      las = 1, 
-     col = "wheat", 
+     col = "chocolate4", 
      main = "Average Steps within Intervals",
      col.main = "blue",
      font.main = 4,
@@ -136,7 +119,7 @@ The highest average number of steps was found in interval **835** and had the va
 
 ## Imputing missing values
 
-The original dataset contained a certain amount of `NA` values, which were removed prior to doing the previous analyses.  Just how many values in the original dataset were `NA` is easily calculated using the `nrow` function against both the original and reduced datasets.
+The original dataset contained a certain amount of **NA** values, which were removed prior to doing the previous analyses.  Just how many values in the original dataset were **NA** is easily calculated using the `nrow` function against both the original and reduced datasets.
 
 
 ```r
@@ -155,11 +138,11 @@ nrow(complete_days_only)
 ## [1] 15264
 ```
 
-And so the number of missing observations is **2304**.
+And so the number of missing observations is the difference between the two, or **2304**.
 
-The presence of missing data for certain days in this time sequence may introduce bias into some calculations or summaries of the data, so it is useful to impute values for those observations in this category.  There are packages in `R` which handle imputations but using a simple random number generator in this case should suffice.
+The presence of missing data for certain days in this time sequence may introduce bias into some calculations or summaries of the data, so it is useful to impute values for those observations in this category.  There are packages in **R** which handle imputations but using a simple random number generator in this case should suffice.
 
-The following code will generate a series of integral values that spans the range of observations in the original dataset, from the minimum to the maximum value.  The entries in this vector will be used as replacement values for the existing `NA` entries in the original dataset.  Using `set.seed` will result in the same set of integers being produced for subsequent runs.
+The following code will generate a series of integral values that spans the range of observations in the original dataset, from the minimum to the maximum value.  The entries in this vector will be used as replacement values for the existing **NA** entries in the original dataset.  Using `set.seed` will result in the same set of integers being produced for subsequent runs and support the concept of reproducible research.  The max value is divided by 10 provide reasonable scale to these values, which can get quite large and skew the results in a different way that the missing values can.
 
 
 ```r
@@ -169,7 +152,7 @@ z  <- floor(runif(nrow(activity),
                   max = max(activity$steps, na.rm = T)/10))
 ```
 
-Next the indices of the missing values are determined.
+Next the indices of the missing values are determined.  The use of a separate vector to hold these results rather than include them inline in the mutation code is done for readability.
 
 
 ```r
@@ -188,8 +171,8 @@ How does imputing values for missing data affect the results obtained earlier wi
 
 ```r
 complete_data  <- activity %>% 
-  group_by(date) %>% 
-  summarise(daily_step_count = sum(steps), mean_step = mean(steps), median_step = median(steps))
+                  group_by(date) %>% 
+                  summarise(daily_step_count = sum(steps))
 ```
 
 
@@ -207,24 +190,8 @@ hist(complete_data$daily_step_count,
 
 ![](./figures/plot_count_with_complete_data-1.png) 
 
+Once again, the mean and median can be easily calculated from the daily totals, and the mean of all the steps over the two-month period is **10858.38** while the median is **11196**.  The imputed data had a negligible affect on both the mean and the median calculated values.  The data did, however, produce a gap in recorded values for the range between 18000 and 20000.
 
-```r
-summary(complete_data$mean_step)
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##  0.1424 34.0900 38.8800 37.7000 44.4800 73.5900
-```
-
-```r
-summary(complete_data$median_step)
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.000   0.000   0.000   5.246   0.000  43.000
-```
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ```r
