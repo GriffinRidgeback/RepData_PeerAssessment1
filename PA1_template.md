@@ -75,7 +75,7 @@ hist(step_summary$daily_step_count,
     ylim = c(0, 30))
 ```
 
-![](PA1_template_files/figure-html/plot_count-1.png) 
+![](./figures/plot_count-1.png) 
 
 Since the mean and median were calculated at the same time as the sum, they simply can be printed at this point.
 
@@ -124,7 +124,7 @@ plot(x$interval,
      )
 ```
 
-![](PA1_template_files/figure-html/plot_avg_steps_within_interval-1.png) 
+![](./figures/plot_avg_steps_within_interval-1.png) 
 
 So *which* interval had the highest number of average steps?  The `which.max` function answers that easily.
 
@@ -205,7 +205,7 @@ hist(complete_data$daily_step_count,
     ylim = c(0, 25))
 ```
 
-![](PA1_template_files/figure-html/plot_count_with_complete_data-1.png) 
+![](./figures/plot_count_with_complete_data-1.png) 
 
 
 ```r
@@ -243,4 +243,4 @@ xlab = "Daily Intervals",
 ylab = "Step Averages"))
 ```
 
-![](PA1_template_files/figure-html/weekends_weekdays-1.png) 
+![](./figures/weekends_weekdays-1.png) 
