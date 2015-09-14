@@ -194,20 +194,35 @@ Once again, the mean and median can be easily calculated from the daily totals, 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+Another reasonable question to ask is whether or not the activity level changes based on the day being a weekday or a weekend.  To answer this question, the **date** variable has its values converted to dates.
+
+
 ```r
 activity$date <- as.POSIXct(activity$date)
-
-activity$dayType  <- ifelse(weekdays(activity$date) %in% c("Saturday", "Sunday"), "weekend", "weekday")
-activity$dayType  <- as.factor(activity$dayType)
-q  <- activity %>% group_by(dayType, interval) %>% summarise(daily_step_count = sum(steps))
-library(lattice)
-with(q, xyplot(daily_step_count ~ interval | dayType, 
-type = "l",      
-main = "Average Steps within Intervals",
-col.main = "blue",
-font.main = 4,
-xlab = "Daily Intervals",
-ylab = "Step Averages"))
 ```
 
-![](./figures/weekends_weekdays-1.png) 
+
+```r
+activity$dayType  <- ifelse(weekdays(activity$date) %in% c("Saturday", "Sunday"), "weekend", "weekday")
+activity$dayType  <- as.factor(activity$dayType)
+```
+
+
+```r
+q  <- activity %>% 
+      group_by(dayType, interval) %>% 
+      summarise(daily_step_count = sum(steps))
+```
+
+
+```r
+library(lattice)
+with(q, 
+      xyplot(daily_step_count ~ interval | dayType, 
+      type = "l",      
+      main = "Total Steps within Intervals",
+      xlab = "Daily Intervals",
+      ylab = "Total Steps"))
+```
+
+![](./figures/plot_weekday_weekend-1.png) 
