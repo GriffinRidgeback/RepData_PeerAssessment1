@@ -77,7 +77,7 @@ hist(step_summary$daily_step_count,
 
 ![](./figures/plot_count-1.png) 
 
-The mean and median can be easily calculated from the daily totals, and the mean of all the steps over the two-month period is **10766.19** while the median is **10765**.
+The mean and median can be easily calculated from the daily totals, and the mean of all the steps over the two-month period is **10766.19** while the median is **10765**.  Two of the many articles presenting the pros and cons of walking 10,000 steps per day are available here: [pros](http://shapeup.org/10000-steps/) and [cons](http://health.usnews.com/health-news/blogs/eat-run/2014/05/21/why-10-000-steps-a-day-wont-make-you-thin). 
 
 ## What is the average daily activity pattern?
 
@@ -175,6 +175,8 @@ complete_data  <- activity %>%
                   summarise(daily_step_count = sum(steps))
 ```
 
+And here is the plot:
+
 
 ```r
 hist(complete_data$daily_step_count, 
@@ -201,11 +203,15 @@ Another reasonable question to ask is whether or not the activity level changes 
 activity$date <- as.POSIXct(activity$date)
 ```
 
+Next, in order to separate the data into weekday and weekend subsets for analysis, the **date** variable is input to the `weekdays` method and that output is checked against a vector of weekend day names.  The appropriate text is added as a new column to the dataframe.  This column is then converted to a factor using the `as.factor` method.
+
 
 ```r
 activity$dayType  <- ifelse(weekdays(activity$date) %in% c("Saturday", "Sunday"), "weekend", "weekday")
 activity$dayType  <- as.factor(activity$dayType)
 ```
+
+To prepare the data for plotting, the dataset with imputed values is organized first by **dayType** (weekday, weekend) and then by **interval**.  A sum of the steps recorded within those time intervals for each **dayType** is then computed.
 
 
 ```r
@@ -213,6 +219,9 @@ q  <- activity %>%
       group_by(dayType, interval) %>% 
       summarise(daily_step_count = sum(steps))
 ```
+
+Now that the data is ready for plotting, create a time series plot using the lattice package so that the independent/dependent variables can be conditioned by the factor variable **dayType**.
+
 
 
 ```r
@@ -226,3 +235,5 @@ with(q,
 ```
 
 ![](./figures/plot_weekday_weekend-1.png) 
+
+It would appear from the output of the graph that this person spent a great deal of time relaxing on the weekends after walking so much during the week!
