@@ -110,7 +110,7 @@ So *which* interval had the highest number of average steps?  The `which.max` fu
 x[which.max(x$avg_interval), ]
 ```
 
-The highest average number of steps was found in interval **`r x[which.max(x$avg_interval), 1]`** and had the value **`r x[which.max(x$avg_interval), 2]`**.
+The highest average number of steps was found in interval **`r x[which.max(x$avg_interval), 1]`** and had the value **`r prettyNum(x[which.max(x$avg_interval), 2])`**.
 
 ## Imputing missing values
 
@@ -125,7 +125,7 @@ And so the number of missing observations is the difference between the two, or 
 
 The presence of missing data for certain days in this time sequence may introduce bias into some calculations or summaries of the data, so it is useful to impute values for those observations in this category.  There are packages in **R** which handle imputations but using a simple random number generator in this case should suffice.
 
-The following code will generate a series of integral values that spans the range of observations in the original dataset, from the minimum to the maximum value.  The entries in this vector will be used as replacement values for the existing **NA** entries in the original dataset.  Using `set.seed` will result in the same set of integers being produced for subsequent runs and support the concept of reproducible research.  The max value is divided by 10 provide reasonable scale to these values, which can get quite large and skew the results in a different way that the missing values can.
+The following code will generate a series of integral values that spans the range of observations in the original dataset, from the minimum to the maximum value.  The entries in this vector will be used as replacement values for the existing **NA** entries in the original dataset.  Using `set.seed` will result in the same set of integers being produced for subsequent runs and support the concept of reproducible research.  The max value is divided by 10 provide reasonable scale to these values, which can get quite large and skew the results in a different way than the missing values can.
 
 ```{r generate_imputed_values}
 set.seed(1234)

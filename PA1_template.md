@@ -115,7 +115,7 @@ So *which* interval had the highest number of average steps?  The `which.max` fu
 x[which.max(x$avg_interval), ]
 ```
 
-The highest average number of steps was found in interval **835** and had the value **206.1698113**.
+The highest average number of steps was found in interval **835** and had the value **206.1698**.
 
 ## Imputing missing values
 
